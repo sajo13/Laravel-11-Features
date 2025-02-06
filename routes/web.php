@@ -2,19 +2,29 @@
 
 use App\Models\User;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Client\Pool;
+use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    $conversionRates = Http::pool(fn (Pool $pool) => [
+        $pool->as('GBP')->retry(3)->get("http://flaky.test/api/conversion/GBP"),
+        $pool->as('USD')->retry(3)->get("http://flaky.test/api/conversion/USD"),
+        $pool->as('EUR')->retry(3)->get("http://flaky.test/api/conversion/EUR")
+    ]);
 
-//    dump('hello world');
-//
-//    dd('hello end execution');
+    return collect($conversionRates)->map(function ($response) {
+        if ($response instanceof Response) {
+            return $response->body(); // Successful response
+        }
 
-//    User::with('notifications')->latest()->limit(5)->dd()->get();
-
-//    str('Hello')->append('World')->apa()->dump()->toString();
-
-    return view('welcome');
+        // Handle errors like ConnectionException
+        return [
+            'error' => true,
+            'message' => $response->getMessage() ?? 'An error occurred.'
+        ];
+    });
 });
 
 
