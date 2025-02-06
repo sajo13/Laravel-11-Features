@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,6 +19,12 @@ Route::get('/', function () {
 
 
 Route::get('/login', function () {
+
+//    $uuid = Request::identifier();
+//    dump($uuid);
+//    $uuid = Request::identifier();
+//    dd($uuid);
+
     $users = User::whereHas('posts')
         ->with('latestPosts')
         ->paginate(2);
