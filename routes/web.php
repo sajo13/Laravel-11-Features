@@ -18,7 +18,11 @@ Route::get('/', function () {
 
 
 Route::get('/login', function () {
-    return view('login');
+    $users = User::whereHas('posts')
+        ->with('latestPosts')
+        ->paginate(2);
+
+    return view('login', compact('users'));
 });
 
 Route::get('/dashboard', function () {
