@@ -14,9 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
 
-        $middleware
-            ->web(\App\Http\Middleware\LogRequestEndpoint::class)
-            ->statefulApi();
+        $middleware->api('throttle:api');
 
     })
     ->withExceptions(function (Exceptions $exceptions) {
