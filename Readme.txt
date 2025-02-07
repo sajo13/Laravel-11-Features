@@ -19,3 +19,13 @@ When you change the encryption key in your Laravel application (e.g., by regener
 
 User Sessions: All authenticated user sessions will be invalidated. This is because session cookies are encrypted with your current encryption key.
 Data Decryption: Any data previously encrypted with the old key will become inaccessible unless the key is also available for decryption.
+
+
+No need of Test flags
+
+Laravel can now automatically recognize whether you're using PHPUnit or Pest,
+so you no longer need to manually specify that you're using Pest,
+streamlining the process of running tests.
+
+eg:
+php artisan make:test MyExampleTest
