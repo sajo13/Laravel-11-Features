@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MailController;
 use App\Models\User;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Http\Client\Pool;
@@ -26,22 +27,25 @@ Route::get('/', function () {
         ];
     });
 });
+//
+//
+//Route::get('/login', function () {
+//
+////    $uuid = Request::identifier();
+////    dump($uuid);
+////    $uuid = Request::identifier();
+////    dd($uuid);
+//
+//    $users = User::whereHas('posts')
+//        ->with('latestPosts')
+//        ->paginate(2);
+//
+//    return view('login', compact('users'));
+//});
+//
+//Route::get('/dashboard', function () {
+//    return view('dashboard');
+//})->middleware(['auth'])->name('dashboard');
 
 
-Route::get('/login', function () {
-
-//    $uuid = Request::identifier();
-//    dump($uuid);
-//    $uuid = Request::identifier();
-//    dd($uuid);
-
-    $users = User::whereHas('posts')
-        ->with('latestPosts')
-        ->paginate(2);
-
-    return view('login', compact('users'));
-});
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::get('sendmail', [MailController::class, 'index']);
