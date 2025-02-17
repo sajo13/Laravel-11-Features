@@ -51,7 +51,12 @@ Route::get('/', function () {
 Route::get('sendmail', [MailController::class, 'index']);
 
 Route::get('jobs', function () {
-    \App\Jobs\SendWelcomeEmail::dispatch();
+
+    foreach (range(1,100) as $index) {
+        \App\Jobs\SendWelcomeEmail::dispatch();
+    }
+
+    \App\Jobs\ProcessPayment::dispatch()->onQueue('payments');
 
     return view('welcome');
 });
