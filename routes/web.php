@@ -49,3 +49,9 @@ Route::get('/', function () {
 
 
 Route::get('sendmail', [MailController::class, 'index']);
+
+Route::get('jobs', function () {
+    \App\Jobs\SendWelcomeEmail::dispatch();
+
+    return view('welcome');
+});
