@@ -1,0 +1,32 @@
+
+
+Handling Failed Jobs
+Laravel automatically handles failed jobs if you have the failed_jobs table set up. To configure this, you need to run:
+
+
+php artisan queue:failed-table
+
+php artisan migrate
+To handle the failure:
+
+
+namespace App\Jobs;
+
+use Illuminate\Support\Facades\Log;
+
+class SendWelcomeEmail implements ShouldQueue
+{
+    public function failed(Exception $exception)
+    {
+        Log::error('Failed to send email: ' . $exception->getMessage());
+    }
+}
+
+
+You can view failed jobs by running:
+
+php artisan queue:failed
+
+To retry failed jobs:
+
+php artisan queue:retry all
