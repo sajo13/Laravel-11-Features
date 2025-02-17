@@ -52,11 +52,15 @@ Route::get('sendmail', [MailController::class, 'index']);
 
 Route::get('jobs', function () {
 
-    foreach (range(1,100) as $index) {
-        \App\Jobs\SendWelcomeEmail::dispatch();
-    }
+    $batch = [
+        new \App\Jobs\PullRepo('laracast/project1'),
+        new \App\Jobs\PullRepo('laracast/project2'),
+        new \App\Jobs\PullRepo('laracast/project3'),
+    ];
 
-    \App\Jobs\ProcessPayment::dispatch()->onQueue('payments');
+    \Illuminate\Support\Facades\Bus::batch($batch)
+        ->allowFailures()
+        ->dispatch();
 
     return view('welcome');
 });
