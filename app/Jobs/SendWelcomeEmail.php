@@ -12,6 +12,9 @@ class SendWelcomeEmail implements ShouldQueue
 {
     use Dispatchable, Queueable, interactsWithQueue, SerializesModels;
 
+    public  $tries = 10;
+    public $maxExceptions = 2;
+
     /**
      * Create a new job instance.
      */
@@ -23,11 +26,16 @@ class SendWelcomeEmail implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle()
     {
 
-        sleep(3);
+        throw new \Exception('failed');
 
-        info('Hello!');
+        return $this->release(2);
+    }
+
+    public function failed($e)
+    {
+        info('failed');
     }
 }
