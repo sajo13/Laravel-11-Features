@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MailController;
+use App\Jobs\Deploy;
 use App\Models\User;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Request;
@@ -52,17 +53,7 @@ Route::get('/', function () {
 Route::get('sendmail', [MailController::class, 'index']);
 
 Route::get('jobs', function () {
-
-    Bus::chain([
-        new \App\Jobs\PullRepo(),
-        function () {
-            Bus::batch([
-                new \App\Jobs\SendWelcomeEmail(),
-                new \App\Jobs\PullRepo(),
-            ])->dispatch();
-        }
-    ])->dispatch();
-
+    Deploy::dispatch();
 
     return view('welcome');
 });
