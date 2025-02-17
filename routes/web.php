@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MailController;
 use App\Models\User;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Http\Client\Response;
@@ -52,15 +53,16 @@ Route::get('sendmail', [MailController::class, 'index']);
 
 Route::get('jobs', function () {
 
-    $batch = [
-        new \App\Jobs\PullRepo('laracast/project1'),
-        new \App\Jobs\PullRepo('laracast/project2'),
-        new \App\Jobs\PullRepo('laracast/project3'),
-    ];
+    Bus::chain([
+        new \App\Jobs\PullRepo(),
+        function () {
+            Bus::batch([
+                new \App\Jobs\SendWelcomeEmail(),
+                new \App\Jobs\PullRepo(),
+            ])->dispatch();
+        }
+    ])->dispatch();
 
-    \Illuminate\Support\Facades\Bus::batch($batch)
-        ->allowFailures()
-        ->dispatch();
 
     return view('welcome');
 });
